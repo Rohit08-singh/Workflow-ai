@@ -23,5 +23,4 @@ public class ApiResponse<T> {
 
     @Builder.Default
     private LocalDateTime timestamp = LocalDateTime.now();
-
 }

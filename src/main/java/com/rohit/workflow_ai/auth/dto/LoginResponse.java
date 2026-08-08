@@ -12,5 +12,4 @@ public class LoginResponse {
     private String refreshToken;
 
     private UserResponse user;
-
 }

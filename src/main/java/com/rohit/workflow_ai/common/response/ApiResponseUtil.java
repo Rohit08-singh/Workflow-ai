@@ -3,7 +3,7 @@ package com.rohit.workflow_ai.common.response;
 import org.springframework.http.HttpStatus;
 
 public class ApiResponseUtil {
-
+            
     private ApiResponseUtil() {
     }
 
@@ -44,5 +44,4 @@ public class ApiResponseUtil {
                 .message(message)
                 .build();
     }
-
 }
