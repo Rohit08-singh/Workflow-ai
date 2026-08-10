@@ -107,4 +107,44 @@ public class AuthService {
                 .build();
     }
 
+    public void logout() {
+        // Stateless JWT logout.
+        // Frontend removes both access and refresh tokens.
+    }
+
+    public ForgotPasswordResponse forgotPassword(ForgotPasswordRequest request) {
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() ->
+                        new AppException(ErrorCode.USER_NOT_FOUND));
+
+        String token = jwtService.generatePasswordResetToken(user);
+
+        return ForgotPasswordResponse.builder()
+                .resetToken(token)
+                .message("Password reset token generated successfully")
+                .build();
+    }
+
+
+    public void resetPassword(ResetPasswordRequest request) {
+
+        if (!jwtService.validateToken(request.getResetToken())) {
+            throw new AppException(ErrorCode.INVALID_RESET_TOKEN);
+        }
+
+        String email = jwtService.extractEmail(request.getResetToken());
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new AppException(ErrorCode.USER_NOT_FOUND));
+
+        user.setPassword(
+                passwordEncoder.encode(request.getNewPassword())
+        );
+
+        userRepository.save(user);
+    }
+
+
 }

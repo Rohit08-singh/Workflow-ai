@@ -82,4 +82,16 @@ public class JwtService {
             return false;
         }
     }
+
+    public String generatePasswordResetToken(User user) {
+
+        return Jwts.builder()
+                .subject(user.getEmail())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 15 * 60 * 1000))
+                .signWith(key)
+                .compact();
+    }
+
+    
 }
