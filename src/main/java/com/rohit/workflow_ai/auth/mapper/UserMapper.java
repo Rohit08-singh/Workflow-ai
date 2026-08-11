@@ -4,6 +4,7 @@ import com.rohit.workflow_ai.auth.dto.RegisterCompanyRequest;
 import com.rohit.workflow_ai.auth.dto.UserResponse;
 import com.rohit.workflow_ai.common.enums.UserRole;
 import com.rohit.workflow_ai.company.entity.Company;
+import com.rohit.workflow_ai.user.dto.UserProfileResponse;
 import com.rohit.workflow_ai.user.entity.User;
 import org.bson.types.ObjectId;
 
@@ -43,6 +44,19 @@ public class UserMapper {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
+                .role(user.getRole())
+                .status(user.getStatus())
+                .build();
+    }
+
+    public static UserProfileResponse toUserProfile(User user) {
+
+        return UserProfileResponse.builder()
+                .id(user.getId().toHexString())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .phone(user.getPhone())
                 .role(user.getRole())
                 .status(user.getStatus())
                 .build();
