@@ -6,6 +6,6 @@ public enum Status {
 
     INACTIVE,
 
-    BLOCKED
-
+    BLOCKED,
+    DELETED
 }

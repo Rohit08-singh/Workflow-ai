@@ -19,12 +19,12 @@ public enum ErrorCode {
     // =========================
     COMPANY_NOT_FOUND(HttpStatus.NOT_FOUND, "Company not found"),
     COMPANY_ALREADY_EXISTS(HttpStatus.CONFLICT, "Company already exists"),
-
+    CLIENT_ALREADY_EXISTS(HttpStatus.CONFLICT, "Client already exists"),
     // =========================
     // Client Errors
     // =========================
     CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Client not found"),
-    CLIENT_ALREADY_EXISTS(HttpStatus.CONFLICT, "Client already exists"),
+
 
     // =========================
     // Project Errors
