@@ -1,5 +1,6 @@
 package com.rohit.workflow_ai.common.entity;
 
+import com.rohit.workflow_ai.common.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,5 +18,6 @@ public abstract class BaseEntity {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-}
+    private Status recordStatus = Status.ACTIVE;
 
+}

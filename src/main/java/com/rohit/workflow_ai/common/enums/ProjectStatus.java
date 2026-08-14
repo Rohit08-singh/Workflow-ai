@@ -2,14 +2,13 @@ package com.rohit.workflow_ai.common.enums;
 
 public enum ProjectStatus {
 
-    PLANNING,
+    PLANNED,
 
     IN_PROGRESS,
 
-    COMPLETED,
-
     ON_HOLD,
 
-    CANCELLED
+    COMPLETED,
 
+    CANCELLED
 }
