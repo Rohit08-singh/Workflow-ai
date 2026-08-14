@@ -16,7 +16,6 @@ import java.util.List;
 
 @Service
 public class ClientService {
-
     private final ClientRepository clientRepository;
 
     public ClientService(ClientRepository clientRepository) {
@@ -49,7 +48,6 @@ public class ClientService {
     }
 
     public ClientResponse getClientById(String clientId, ObjectId companyId) {
-
         Client client = clientRepository
                 .findByIdAndCompanyId(new ObjectId(clientId), companyId)
                 .orElseThrow(() ->

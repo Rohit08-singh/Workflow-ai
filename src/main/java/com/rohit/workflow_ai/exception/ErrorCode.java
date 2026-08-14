@@ -19,12 +19,12 @@ public enum ErrorCode {
     // =========================
     COMPANY_NOT_FOUND(HttpStatus.NOT_FOUND, "Company not found"),
     COMPANY_ALREADY_EXISTS(HttpStatus.CONFLICT, "Company already exists"),
-    CLIENT_ALREADY_EXISTS(HttpStatus.CONFLICT, "Client already exists"),
+
     // =========================
     // Client Errors
     // =========================
     CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Client not found"),
-
+    CLIENT_ALREADY_EXISTS(HttpStatus.CONFLICT, "Client already exists"),
 
     // =========================
     // Project Errors
@@ -42,8 +42,8 @@ public enum ErrorCode {
     // Authentication & Security
     // =========================
     INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "Invalid email or password"),
-    ACCESS_DENIED(HttpStatus.FORBIDDEN, "Access denied"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Unauthorized"),
+    ACCESS_DENIED(HttpStatus.FORBIDDEN, "Access denied"),
 
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "Invalid token"),
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "Token has expired"),
