@@ -19,5 +19,4 @@ public abstract class BaseEntity {
     private LocalDateTime updatedAt;
 
     private Status recordStatus = Status.ACTIVE;
-
 }

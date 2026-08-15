@@ -102,7 +102,7 @@ public class ProjectController {
                         "Project updated successfully"
                 )
         );
-    }
+    }   
 
     @DeleteMapping("/{projectId}")
     public ResponseEntity<ApiResponse<Void>> deleteProject(
