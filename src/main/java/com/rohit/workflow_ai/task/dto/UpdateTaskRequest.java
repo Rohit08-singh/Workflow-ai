@@ -17,8 +17,7 @@ public class UpdateTaskRequest {
 
     private String description;
 
-    @NotBlank(message = "Assigned user is required")
-    private String assignedTo;
+    private String assignedUserId;
 
     @NotNull(message = "Due date is required")
     private LocalDate dueDate;
