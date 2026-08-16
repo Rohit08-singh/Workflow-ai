@@ -17,10 +17,9 @@ public class TaskResponse {
 
     private String description;
 
-    private String assignedTo;
+    private String assignedUserId;
 
     private LocalDate dueDate;
 
     private String status;
 }
-

@@ -6,20 +6,18 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 import java.util.Optional;
-
 public interface TaskRepository extends MongoRepository<Task, ObjectId> {
 
-    List<Task> findAllByProjectIdAndRecordStatus(
-            ObjectId projectId,
-            String recordStatus
-    );
-
-    Optional<Task> findByIdAndRecordStatus(
-            ObjectId id,
-            String recordStatus
-    );
     Optional<Task> findByIdAndCompanyId(
             ObjectId id,
             ObjectId companyId
     );
+
+    List<Task> findByProjectIdAndCompanyId(
+            ObjectId projectId,
+            ObjectId companyId
+    );
+
+    
+
 }

@@ -17,7 +17,8 @@ public class CreateTaskRequest {
 
     private String description;
 
-    private String assignedTo;
+    // User ID to assign task
+    private String assignedUserId;
 
     private LocalDate dueDate;
 }

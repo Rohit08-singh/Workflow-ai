@@ -20,7 +20,12 @@ public class TaskMapper {
                 .projectId(projectId)
                 .title(request.getTitle())
                 .description(request.getDescription())
-                .assignedTo(request.getAssignedTo())
+                .assignedUserId(
+                        request.getAssignedUserId() == null ||
+                                request.getAssignedUserId().isBlank()
+                                ? null
+                                : new ObjectId(request.getAssignedUserId())
+                )
                 .dueDate(request.getDueDate())
                 .build();
     }
@@ -32,9 +37,13 @@ public class TaskMapper {
                 .projectId(task.getProjectId().toHexString())
                 .title(task.getTitle())
                 .description(task.getDescription())
-                .assignedTo(task.getAssignedTo())
+                .assignedUserId(
+                        task.getAssignedUserId() == null
+                                ? null
+                                : task.getAssignedUserId().toHexString()
+                )
                 .dueDate(task.getDueDate())
-                .status(task.getRecordStatus().name())
+                .status(task.getStatus().name())
                 .build();
     }
 }
