@@ -7,7 +7,11 @@ public enum ErrorCode {
     // =========================
     // User Errors
     // =========================
+    // =========================
+// User Errors
+// =========================
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not found"),
+    USER_ALREADY_EXISTS(HttpStatus.CONFLICT, "User already exists"),
     EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "Email already exists"),
     USER_ALREADY_VERIFIED(HttpStatus.BAD_REQUEST, "User is already verified"),
 

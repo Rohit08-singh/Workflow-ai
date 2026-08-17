@@ -3,12 +3,15 @@ package com.rohit.workflow_ai.user.dto;
 import com.rohit.workflow_ai.common.enums.Status;
 import com.rohit.workflow_ai.common.enums.UserRole;
 import lombok.Builder;
-import lombok.Data;
-@Data
+import lombok.Getter;
+
+@Getter
 @Builder
-public class UserProfileResponse {
+public class UserResponse {
 
     private String id;
+
+    private String companyId;
 
     private String firstName;
 
@@ -22,8 +25,5 @@ public class UserProfileResponse {
 
     private Status status;
 
-    private String companyId;
-
     private String profileImage;
-
 }
