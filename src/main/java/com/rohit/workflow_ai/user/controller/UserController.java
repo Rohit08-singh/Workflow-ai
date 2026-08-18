@@ -19,8 +19,15 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
     @GetMapping("/me")
+    // ==========================
+    // Logged In User Profile
+    // ==========================
+
     public ResponseEntity<ApiResponse<UserProfileResponse>> getMyProfile(
             Authentication authentication) {
 
@@ -44,4 +51,115 @@ public class UserController {
                 )
         );
     }
+<<<<<<< Updated upstream
 }
+=======
+
+    // ==========================
+    // Create Employee
+    // ==========================
+    @PostMapping
+    public ResponseEntity<ApiResponse<UserResponse>> createUser(
+            @Valid @RequestBody CreateUserRequest request) {
+
+        ObjectId companyId =
+                new ObjectId("68a0d12f0d3a4a8dbe2b1234");
+
+        UserResponse response =
+                userService.createUser(request, companyId);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(
+                        ApiResponseUtil.created(
+                                response,
+                                "Employee created successfully"
+                        )
+                );
+    }
+
+    // ==========================
+    // Get All Employees
+    // ==========================
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers() {
+
+        ObjectId companyId =
+                new ObjectId("68a0d12f0d3a4a8dbe2b1234");
+
+        return ResponseEntity.ok(
+                ApiResponseUtil.success(
+                        userService.getAllUsers(companyId),
+                        "Employees fetched successfully"
+                )
+        );
+    }
+
+    // ==========================
+// Get Employee By Id
+// ==========================
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<UserResponse>> getUserById(
+            @PathVariable String id) {
+
+        ObjectId companyId =
+                new ObjectId("68a0d12f0d3a4a8dbe2b1234");
+
+        UserResponse response =
+                userService.getUserById(
+                        id,
+                        companyId
+                );
+
+        return ResponseEntity.ok(
+                ApiResponseUtil.success(
+                        response,
+                        "Employee fetched successfully"
+                )
+        );
+    }
+
+    // ==========================
+// Update Employee
+// ==========================
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<UserResponse>> updateUser(
+            @PathVariable String id,
+            @Valid @RequestBody UpdateUserRequest request) {
+
+        ObjectId companyId =
+                new ObjectId("68a0d12f0d3a4a8dbe2b1234");
+
+        UserResponse response =
+                userService.updateUser(
+                        id,
+                        request,
+                        companyId);
+
+        return ResponseEntity.ok(
+                ApiResponseUtil.success(
+                        response,
+                        "Employee updated successfully"
+                )
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteUser(
+            @PathVariable String id) {
+
+        ObjectId companyId =
+                new ObjectId("68a0d12f0d3a4a8dbe2b1234");
+
+        userService.deleteUser(id, companyId);
+
+        return ResponseEntity.ok(
+                ApiResponseUtil.success(
+                        null,
+                        "Employee deleted successfully"
+                )
+        );
+    }
+}
+
+
+>>>>>>> Stashed changes
