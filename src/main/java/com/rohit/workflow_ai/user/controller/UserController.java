@@ -22,11 +22,21 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
+<<<<<<< Updated upstream
 
+<<<<<<< HEAD
     // ==========================
     // Logged In User Profile       
     // ==========================
+=======
+=======
+>>>>>>> Stashed changes
+>>>>>>> 4b7cca23b8715849d7cd5ee14bb476d2d91fef54
     @GetMapping("/me")
+    // ==========================
+    // Logged In User Profile
+    // ==========================
+
     public ResponseEntity<ApiResponse<UserProfileResponse>> getMyProfile(
             Authentication authentication) {
 
@@ -53,6 +63,12 @@ public class UserController {
                 )
         );
     }
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+}
+=======
+>>>>>>> 4b7cca23b8715849d7cd5ee14bb476d2d91fef54
 
     // ==========================
     // Create Employee
@@ -158,4 +174,11 @@ public class UserController {
                 )
         );
     }
+<<<<<<< HEAD
 }
+=======
+}
+
+
+>>>>>>> Stashed changes
+>>>>>>> 4b7cca23b8715849d7cd5ee14bb476d2d91fef54

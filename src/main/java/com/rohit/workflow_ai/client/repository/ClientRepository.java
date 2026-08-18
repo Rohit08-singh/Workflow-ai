@@ -14,4 +14,9 @@ public interface ClientRepository extends MongoRepository<Client, ObjectId> {
     List<Client> findByCompanyId(ObjectId companyId);
 
     Optional<Client> findByIdAndCompanyId(ObjectId id, ObjectId companyId);
+
+    // ==========================
+    // Dashboard
+    // ==========================
+    long countByCompanyId(ObjectId companyId);
 }
