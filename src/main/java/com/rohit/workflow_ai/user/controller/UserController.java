@@ -22,21 +22,11 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-<<<<<<< Updated upstream
 
-<<<<<<< HEAD
-    // ==========================
-    // Logged In User Profile       
-    // ==========================
-=======
-=======
->>>>>>> Stashed changes
->>>>>>> 4b7cca23b8715849d7cd5ee14bb476d2d91fef54
-    @GetMapping("/me")
     // ==========================
     // Logged In User Profile
     // ==========================
-
+    @GetMapping("/me")
     public ResponseEntity<ApiResponse<UserProfileResponse>> getMyProfile(
             Authentication authentication) {
 
@@ -63,12 +53,6 @@ public class UserController {
                 )
         );
     }
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
-}
-=======
->>>>>>> 4b7cca23b8715849d7cd5ee14bb476d2d91fef54
 
     // ==========================
     // Create Employee
@@ -110,8 +94,8 @@ public class UserController {
     }
 
     // ==========================
-// Get Employee By Id
-// ==========================
+    // Get Employee By Id
+    // ==========================
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> getUserById(
             @PathVariable String id) {
@@ -120,10 +104,7 @@ public class UserController {
                 new ObjectId("68a0d12f0d3a4a8dbe2b1234");
 
         UserResponse response =
-                userService.getUserById(
-                        id,
-                        companyId
-                );
+                userService.getUserById(id, companyId);
 
         return ResponseEntity.ok(
                 ApiResponseUtil.success(
@@ -134,8 +115,8 @@ public class UserController {
     }
 
     // ==========================
-// Update Employee
-// ==========================
+    // Update Employee
+    // ==========================
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> updateUser(
             @PathVariable String id,
@@ -148,7 +129,8 @@ public class UserController {
                 userService.updateUser(
                         id,
                         request,
-                        companyId);
+                        companyId
+                );
 
         return ResponseEntity.ok(
                 ApiResponseUtil.success(
@@ -158,6 +140,9 @@ public class UserController {
         );
     }
 
+    // ==========================
+    // Delete Employee
+    // ==========================
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteUser(
             @PathVariable String id) {
@@ -174,11 +159,4 @@ public class UserController {
                 )
         );
     }
-<<<<<<< HEAD
 }
-=======
-}
-
-
->>>>>>> Stashed changes
->>>>>>> 4b7cca23b8715849d7cd5ee14bb476d2d91fef54

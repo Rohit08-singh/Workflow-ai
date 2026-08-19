@@ -13,11 +13,7 @@ public interface UserRepository extends MongoRepository<User, ObjectId> {
     Optional<User> findByEmail(String email);
 
     boolean existsByEmail(String email);
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> 4b7cca23b8715849d7cd5ee14bb476d2d91fef54
+
 
     boolean existsByEmailAndCompanyId(String email, ObjectId companyId);
 
@@ -27,8 +23,6 @@ public interface UserRepository extends MongoRepository<User, ObjectId> {
             ObjectId id,
             ObjectId companyId
     );
-<<<<<<< HEAD
-=======
 
     // ==========================
     // Dashboard
@@ -39,6 +33,5 @@ public interface UserRepository extends MongoRepository<User, ObjectId> {
             ObjectId companyId,
             Status status
     );
->>>>>>> Stashed changes
->>>>>>> 4b7cca23b8715849d7cd5ee14bb476d2d91fef54
+
 }
