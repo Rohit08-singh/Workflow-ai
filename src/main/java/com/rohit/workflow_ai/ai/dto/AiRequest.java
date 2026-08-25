@@ -1,4 +1,12 @@
 package com.rohit.workflow_ai.ai.dto;
 
-public class AiRequest {
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class AIRequest {
+
+    private String prompt;
+
 }
