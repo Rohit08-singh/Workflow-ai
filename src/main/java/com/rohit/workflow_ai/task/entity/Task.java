@@ -33,7 +33,7 @@ public class Task extends BaseEntity {
 
     private String description;
 
-    private String assignedUserId;
+    private ObjectId assignedUserId;
 
     private LocalDate dueDate;
 }

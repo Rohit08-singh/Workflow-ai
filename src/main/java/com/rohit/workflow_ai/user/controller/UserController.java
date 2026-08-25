@@ -2,13 +2,16 @@ package com.rohit.workflow_ai.user.controller;
 
 import com.rohit.workflow_ai.common.response.ApiResponse;
 import com.rohit.workflow_ai.common.response.ApiResponseUtil;
-import com.rohit.workflow_ai.user.dto.UpdateProfileRequest;
-import com.rohit.workflow_ai.user.dto.UserProfileResponse;
+import com.rohit.workflow_ai.user.dto.*;
 import com.rohit.workflow_ai.user.service.UserService;
 import jakarta.validation.Valid;
+import org.bson.types.ObjectId;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -19,15 +22,11 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
-    @GetMapping("/me")
     // ==========================
     // Logged In User Profile
     // ==========================
-
+    @GetMapping("/me")
     public ResponseEntity<ApiResponse<UserProfileResponse>> getMyProfile(
             Authentication authentication) {
 
@@ -39,6 +38,9 @@ public class UserController {
         );
     }
 
+    // ==========================
+    // Update Profile
+    // ==========================
     @PutMapping("/me")
     public ResponseEntity<ApiResponse<UserProfileResponse>> updateProfile(
             Authentication authentication,
@@ -51,9 +53,6 @@ public class UserController {
                 )
         );
     }
-<<<<<<< Updated upstream
-}
-=======
 
     // ==========================
     // Create Employee
@@ -95,8 +94,8 @@ public class UserController {
     }
 
     // ==========================
-// Get Employee By Id
-// ==========================
+    // Get Employee By Id
+    // ==========================
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> getUserById(
             @PathVariable String id) {
@@ -105,10 +104,7 @@ public class UserController {
                 new ObjectId("68a0d12f0d3a4a8dbe2b1234");
 
         UserResponse response =
-                userService.getUserById(
-                        id,
-                        companyId
-                );
+                userService.getUserById(id, companyId);
 
         return ResponseEntity.ok(
                 ApiResponseUtil.success(
@@ -119,8 +115,8 @@ public class UserController {
     }
 
     // ==========================
-// Update Employee
-// ==========================
+    // Update Employee
+    // ==========================
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> updateUser(
             @PathVariable String id,
@@ -133,7 +129,8 @@ public class UserController {
                 userService.updateUser(
                         id,
                         request,
-                        companyId);
+                        companyId
+                );
 
         return ResponseEntity.ok(
                 ApiResponseUtil.success(
@@ -143,6 +140,9 @@ public class UserController {
         );
     }
 
+    // ==========================
+    // Delete Employee
+    // ==========================
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteUser(
             @PathVariable String id) {
@@ -160,6 +160,3 @@ public class UserController {
         );
     }
 }
-
-
->>>>>>> Stashed changes
