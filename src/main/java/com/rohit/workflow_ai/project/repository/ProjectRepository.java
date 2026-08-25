@@ -8,7 +8,12 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProjectRepository extends MongoRepository<Project, ObjectId> {
+public interface ProjectRepository
+        extends MongoRepository<Project, ObjectId> {
+
+    // ==========================
+    // Project Management
+    // ==========================
 
     boolean existsByNameAndCompanyId(
             String name,
@@ -29,9 +34,11 @@ public interface ProjectRepository extends MongoRepository<Project, ObjectId> {
             ObjectId companyId
     );
 
+
     // ==========================
     // Dashboard
     // ==========================
+
     long countByCompanyId(
             ObjectId companyId
     );

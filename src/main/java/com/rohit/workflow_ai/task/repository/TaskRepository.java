@@ -8,7 +8,12 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface TaskRepository extends MongoRepository<Task, ObjectId> {
+public interface TaskRepository
+        extends MongoRepository<Task, ObjectId> {
+
+    // ==========================
+    // Task Management
+    // ==========================
 
     Optional<Task> findByIdAndCompanyId(
             ObjectId id,
@@ -21,9 +26,20 @@ public interface TaskRepository extends MongoRepository<Task, ObjectId> {
     );
 
     // ==========================
+    // Company Tasks
+    // ==========================
+
+    List<Task> findByCompanyId(
+            ObjectId companyId
+    );
+
+    // ==========================
     // Dashboard
     // ==========================
-    long countByCompanyId(ObjectId companyId);
+
+    long countByCompanyId(
+            ObjectId companyId
+    );
 
     long countByCompanyIdAndStatus(
             ObjectId companyId,
