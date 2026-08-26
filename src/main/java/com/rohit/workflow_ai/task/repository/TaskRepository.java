@@ -12,7 +12,7 @@ public interface TaskRepository
         extends MongoRepository<Task, ObjectId> {
 
     // ==========================
-    // Task Management
+    // Task
     // ==========================
 
     Optional<Task> findByIdAndCompanyId(
@@ -20,16 +20,12 @@ public interface TaskRepository
             ObjectId companyId
     );
 
-    List<Task> findByProjectIdAndCompanyId(
-            ObjectId projectId,
+    List<Task> findByCompanyId(
             ObjectId companyId
     );
 
-    // ==========================
-    // Company Tasks
-    // ==========================
-
-    List<Task> findByCompanyId(
+    List<Task> findByProjectIdAndCompanyId(
+            ObjectId projectId,
             ObjectId companyId
     );
 

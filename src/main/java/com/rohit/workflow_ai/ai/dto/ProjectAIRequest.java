@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 public class ProjectAIRequest {
 
-    @NotBlank(message = "Prompt is required")
+    @NotBlank(message = "Prompt cannot be empty")
     private String prompt;
 }

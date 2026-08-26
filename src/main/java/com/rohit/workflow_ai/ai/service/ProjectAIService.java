@@ -31,67 +31,11 @@ public class ProjectAIService {
             ObjectId companyId,
             String userPrompt) {
 
-        // =====================================================
-        // GET COMPANY PROJECTS
-        // =====================================================
-
         List<Project> projects =
                 projectRepository.findByCompanyId(companyId);
 
-        // =====================================================
-        // GET COMPANY TASKS
-        // =====================================================
-
         List<Task> tasks =
                 taskRepository.findByCompanyId(companyId);
-
-        // =====================================================
-        // DEBUG LOGS
-        // =====================================================
-
-        System.out.println("====================================");
-        System.out.println("PROJECT AI SERVICE DEBUG");
-        System.out.println("Company ID: " + companyId);
-        System.out.println("Projects found: " + projects.size());
-        System.out.println("Tasks found: " + tasks.size());
-
-        // Print project details
-        for (Project project : projects) {
-
-            System.out.println(
-                    "Project: " +
-                            project.getName() +
-                            " | ID: " +
-                            project.getId() +
-                            " | Company ID: " +
-                            project.getCompanyId() +
-                            " | Status: " +
-                            project.getStatus()
-            );
-        }
-
-        // Print task details
-        for (Task task : tasks) {
-
-            System.out.println(
-                    "Task: " +
-                            task.getTitle() +
-                            " | ID: " +
-                            task.getId() +
-                            " | Project ID: " +
-                            task.getProjectId() +
-                            " | Assigned User ID: " +
-                            task.getAssignedUserId() +
-                            " | Status: " +
-                            task.getStatus()
-            );
-        }
-
-        System.out.println("====================================");
-
-        // =====================================================
-        // BUILD AI PROMPT
-        // =====================================================
 
         String finalPrompt = """
                 You are an AI project management assistant
@@ -122,25 +66,13 @@ public class ProjectAIService {
                 userPrompt
         );
 
-        // =====================================================
-        // SEND PROMPT TO GEMINI
-        // =====================================================
-
         String response =
                 geminiService.generateContent(finalPrompt);
-
-        // =====================================================
-        // RETURN RESPONSE
-        // =====================================================
 
         return ProjectAIResponse.builder()
                 .response(response)
                 .build();
     }
-
-    // =========================================================
-    // BUILD PROJECT CONTEXT
-    // =========================================================
 
     private String buildProjectContext(
             List<Project> projects) {
@@ -149,7 +81,8 @@ public class ProjectAIService {
             return "No projects found.";
         }
 
-        StringBuilder context = new StringBuilder();
+        StringBuilder context =
+                new StringBuilder();
 
         for (Project project : projects) {
 
@@ -163,7 +96,6 @@ public class ProjectAIService {
                     Start Date: %s
                     End Date: %s
                     Client ID: %s
-                    Company ID: %s
                     """.formatted(
                     project.getId(),
                     project.getName(),
@@ -171,17 +103,12 @@ public class ProjectAIService {
                     project.getStatus(),
                     project.getStartDate(),
                     project.getEndDate(),
-                    project.getClientId(),
-                    project.getCompanyId()
+                    project.getClientId()
             ));
         }
 
         return context.toString();
     }
-
-    // =========================================================
-    // BUILD TASK CONTEXT
-    // =========================================================
 
     private String buildTaskContext(
             List<Task> tasks) {
@@ -190,7 +117,8 @@ public class ProjectAIService {
             return "No tasks found.";
         }
 
-        StringBuilder context = new StringBuilder();
+        StringBuilder context =
+                new StringBuilder();
 
         for (Task task : tasks) {
 
@@ -204,7 +132,6 @@ public class ProjectAIService {
                     Status: %s
                     Assigned User ID: %s
                     Due Date: %s
-                    Company ID: %s
                     """.formatted(
                     task.getId(),
                     task.getProjectId(),
@@ -212,8 +139,7 @@ public class ProjectAIService {
                     task.getDescription(),
                     task.getStatus(),
                     task.getAssignedUserId(),
-                    task.getDueDate(),
-                    task.getCompanyId()
+                    task.getDueDate()
             ));
         }
 

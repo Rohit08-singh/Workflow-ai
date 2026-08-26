@@ -21,6 +21,7 @@ public class AIController {
     // ==========================
     // Generic AI
     // ==========================
+
     @PostMapping("/generate")
     public ResponseEntity<ApiResponse<?>> generateResponse(
             @Valid @RequestBody AIRequest request) {

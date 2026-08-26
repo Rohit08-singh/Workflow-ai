@@ -31,7 +31,6 @@ public class GeminiService {
 
     public String generateContent(String prompt) {
 
-        // Same JSON structure that worked in Postman
         Map<String, Object> requestBody = Map.of(
                 "contents", new Object[]{
                         Map.of(
@@ -48,11 +47,7 @@ public class GeminiService {
         String response = restClient
                 .post()
                 .uri(apiUrl)
-
-                // IMPORTANT:
-                // Same authentication method as Postman
                 .header("x-goog-api-key", apiKey)
-
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(requestBody)
                 .retrieve()
@@ -60,11 +55,14 @@ public class GeminiService {
 
         try {
 
-            JsonNode root = objectMapper.readTree(response);
+            JsonNode root =
+                    objectMapper.readTree(response);
 
-            JsonNode candidates = root.path("candidates");
+            JsonNode candidates =
+                    root.path("candidates");
 
             if (candidates.isEmpty()) {
+
                 throw new RuntimeException(
                         "Gemini returned no candidates"
                 );

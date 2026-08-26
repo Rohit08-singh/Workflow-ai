@@ -1,12 +1,11 @@
 package com.rohit.workflow_ai.ai.dto;
 
-import lombok.Builder;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-@Builder
 public class AIRequest {
 
+    @NotBlank(message = "Prompt cannot be empty")
     private String prompt;
-
 }

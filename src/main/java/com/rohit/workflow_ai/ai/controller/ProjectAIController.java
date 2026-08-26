@@ -27,28 +27,8 @@ public class ProjectAIController {
             @AuthenticationPrincipal CustomUserDetails currentUser,
             @Valid @RequestBody ProjectAIRequest request) {
 
-        System.out.println("====================================");
-        System.out.println("PROJECT AI CONTROLLER DEBUG");
-
-        System.out.println("User ID: "
-                + currentUser.getUser().getId());
-
-        System.out.println("Email: "
-                + currentUser.getUser().getEmail());
-
-        System.out.println("Role: "
-                + currentUser.getUser().getRole());
-
-        System.out.println("Company ID from User: "
-                + currentUser.getUser().getCompanyId());
-
         ObjectId companyId =
                 currentUser.getUser().getCompanyId();
-
-        System.out.println("Company ID passed to Service: "
-                + companyId);
-
-        System.out.println("====================================");
 
         ProjectAIResponse response =
                 projectAIService.askProjectAssistant(

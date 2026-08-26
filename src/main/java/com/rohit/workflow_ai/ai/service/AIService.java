@@ -16,11 +16,12 @@ public class AIService {
     public AIResponse generate(AIRequest request) {
 
         String response =
-                geminiService.generateContent(request.getPrompt());
+                geminiService.generateContent(
+                        request.getPrompt()
+                );
 
         return AIResponse.builder()
                 .response(response)
                 .build();
     }
-
 }
