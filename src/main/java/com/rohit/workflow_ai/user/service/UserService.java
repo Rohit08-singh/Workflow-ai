@@ -30,20 +30,25 @@ public class UserService {
     // ==========================
     // Get Logged In User
     // ==========================
-    public UserProfileResponse getMyProfile(Authentication authentication) {
+
+    public UserProfileResponse getMyProfile(
+            Authentication authentication) {
 
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new AppException(ErrorCode.USER_NOT_FOUND));
+                        new AppException(
+                                ErrorCode.USER_NOT_FOUND
+                        ));
 
         return UserMapper.toUserProfile(user);
     }
 
     // ==========================
-    // Update Profile
+    // Update Own Profile
     // ==========================
+
     public UserProfileResponse updateProfile(
             Authentication authentication,
             UpdateProfileRequest request) {
@@ -52,12 +57,19 @@ public class UserService {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new AppException(ErrorCode.USER_NOT_FOUND));
+                        new AppException(
+                                ErrorCode.USER_NOT_FOUND
+                        ));
 
+        // Check email uniqueness only if email is changed
         if (!user.getEmail().equals(request.getEmail())
-                && userRepository.existsByEmail(request.getEmail())) {
+                && userRepository.existsByEmailAndCompanyId(
+                request.getEmail(),
+                user.getCompanyId())) {
 
-            throw new AppException(ErrorCode.EMAIL_ALREADY_EXISTS);
+            throw new AppException(
+                    ErrorCode.EMAIL_ALREADY_EXISTS
+            );
         }
 
         user.setFirstName(request.getFirstName());
@@ -65,7 +77,8 @@ public class UserService {
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
 
-        User updatedUser = userRepository.save(user);
+        User updatedUser =
+                userRepository.save(user);
 
         return UserMapper.toUserProfile(updatedUser);
     }
@@ -73,6 +86,7 @@ public class UserService {
     // ==========================
     // Create Employee
     // ==========================
+
     public UserResponse createUser(
             CreateUserRequest request,
             ObjectId companyId) {
@@ -81,16 +95,25 @@ public class UserService {
                 request.getEmail(),
                 companyId)) {
 
-            throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
+            throw new AppException(
+                    ErrorCode.USER_ALREADY_EXISTS
+            );
         }
 
-        User user = UserMapper.toEntity(request, companyId);
+        User user =
+                UserMapper.toEntity(
+                        request,
+                        companyId
+                );
 
         user.setPassword(
-                passwordEncoder.encode(request.getPassword())
+                passwordEncoder.encode(
+                        request.getPassword()
+                )
         );
 
-        User savedUser = userRepository.save(user);
+        User savedUser =
+                userRepository.save(user);
 
         return UserMapper.toResponse(savedUser);
     }
@@ -98,53 +121,68 @@ public class UserService {
     // ==========================
     // Get All Employees
     // ==========================
-    public List<UserResponse> getAllUsers(ObjectId companyId) {
 
-        return userRepository.findByCompanyId(companyId)
+    public List<UserResponse> getAllUsers(
+            ObjectId companyId) {
+
+        return userRepository
+                .findByCompanyId(companyId)
                 .stream()
                 .map(UserMapper::toResponse)
                 .toList();
     }
 
     // ==========================
-// Get Employee By Id
-// ==========================
+    // Get Employee By Id
+    // ==========================
+
     public UserResponse getUserById(
             String userId,
             ObjectId companyId) {
 
-        User user = userRepository
-                .findByIdAndCompanyId(
-                        new ObjectId(userId),
-                        companyId
-                )
-                .orElseThrow(() ->
-                        new AppException(
-                                ErrorCode.USER_NOT_FOUND
-                        ));
+        User user =
+                userRepository
+                        .findByIdAndCompanyId(
+                                new ObjectId(userId),
+                                companyId
+                        )
+                        .orElseThrow(() ->
+                                new AppException(
+                                        ErrorCode.USER_NOT_FOUND
+                                ));
 
         return UserMapper.toResponse(user);
     }
 
     // ==========================
-// Update Employee
-// ==========================
+    // Update Employee
+    // ==========================
+
     public UserResponse updateUser(
             String userId,
             UpdateUserRequest request,
             ObjectId companyId) {
 
-        User user = userRepository
-                .findByIdAndCompanyId(
-                        new ObjectId(userId),
-                        companyId)
-                .orElseThrow(() ->
-                        new AppException(ErrorCode.USER_NOT_FOUND));
+        User user =
+                userRepository
+                        .findByIdAndCompanyId(
+                                new ObjectId(userId),
+                                companyId
+                        )
+                        .orElseThrow(() ->
+                                new AppException(
+                                        ErrorCode.USER_NOT_FOUND
+                                ));
 
+        // Check email uniqueness within the same company
         if (!user.getEmail().equals(request.getEmail())
-                && userRepository.existsByEmail(request.getEmail())) {
+                && userRepository.existsByEmailAndCompanyId(
+                request.getEmail(),
+                companyId)) {
 
-            throw new AppException(ErrorCode.EMAIL_ALREADY_EXISTS);
+            throw new AppException(
+                    ErrorCode.EMAIL_ALREADY_EXISTS
+            );
         }
 
         user.setFirstName(request.getFirstName());
@@ -156,21 +194,32 @@ public class UserService {
             user.setRole(request.getRole());
         }
 
-        User updatedUser = userRepository.save(user);
+        User updatedUser =
+                userRepository.save(user);
 
         return UserMapper.toResponse(updatedUser);
     }
 
-    public void deleteUser(String userId, ObjectId companyId) {
+    // ==========================
+    // Delete Employee
+    // ==========================
 
-        User user = userRepository
-                .findByIdAndCompanyId(
-                        new ObjectId(userId),
-                        companyId
-                )
-                .orElseThrow(() ->
-                        new AppException(ErrorCode.USER_NOT_FOUND));
+    public void deleteUser(
+            String userId,
+            ObjectId companyId) {
 
+        User user =
+                userRepository
+                        .findByIdAndCompanyId(
+                                new ObjectId(userId),
+                                companyId
+                        )
+                        .orElseThrow(() ->
+                                new AppException(
+                                        ErrorCode.USER_NOT_FOUND
+                                ));
+
+        // Soft delete
         user.setStatus(Status.DELETED);
 
         userRepository.save(user);

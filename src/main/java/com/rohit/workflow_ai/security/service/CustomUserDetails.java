@@ -1,5 +1,6 @@
 package com.rohit.workflow_ai.security.service;
 
+import com.rohit.workflow_ai.common.enums.Status;
 import com.rohit.workflow_ai.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,7 +25,9 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         return List.of(
-                new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
+                new SimpleGrantedAuthority(
+                        "ROLE_" + user.getRole().name()
+                )
         );
     }
 
@@ -45,7 +48,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return user.getStatus() != Status.BLOCKED;
     }
 
     @Override
@@ -55,6 +58,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.getStatus() == Status.ACTIVE;
     }
 }

@@ -6,66 +6,70 @@ import com.rohit.workflow_ai.client.dto.UpdateClientRequest;
 import com.rohit.workflow_ai.client.service.ClientService;
 import com.rohit.workflow_ai.common.response.ApiResponse;
 import com.rohit.workflow_ai.common.response.ApiResponseUtil;
-import com.rohit.workflow_ai.user.entity.User;
-import com.rohit.workflow_ai.user.repository.UserRepository;
+import com.rohit.workflow_ai.security.service.CustomUserDetails;
 import jakarta.validation.Valid;
+import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
-import com.rohit.workflow_ai.user.entity.User;
-import org.springframework.security.core.Authentication;
-
 
 @RestController
 @RequestMapping("/api/v1/clients")
 public class ClientController {
 
     private final ClientService clientService;
-    private final UserRepository userRepository;
 
-    public ClientController(ClientService clientService,
-                            UserRepository userRepository) {
+    public ClientController(ClientService clientService) {
         this.clientService = clientService;
-        this.userRepository = userRepository;
     }
 
+    // ==========================
+    // Create Client
+    // ==========================
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'COMPANY_ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse<ClientResponse>> createClient(
-            @Valid @RequestBody CreateClientRequest request,
-            Authentication authentication) {
+            @AuthenticationPrincipal CustomUserDetails currentUser,
+            @Valid @RequestBody CreateClientRequest request) {
 
-        String email = authentication.getName();
+        ObjectId companyId =
+                currentUser.getUser().getCompanyId();
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow();
+        ClientResponse response =
+                clientService.createClient(
+                        request,
+                        companyId
+                );
 
-        ClientResponse response = clientService.createClient(
-                request,
-                user.getCompanyId()
-        );
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponseUtil.created(
-                        response,
-                        "Client created successfully"
-                ));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(
+                        ApiResponseUtil.created(
+                                response,
+                                "Client created successfully"
+                        )
+                );
     }
 
+    // ==========================
+    // Get All Clients
+    // ==========================
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'COMPANY_ADMIN', 'EMPLOYEE')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<ClientResponse>>> getAllClients(
-            Authentication authentication) {
+            @AuthenticationPrincipal CustomUserDetails currentUser) {
 
-        String email = authentication.getName();
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow();
+        ObjectId companyId =
+                currentUser.getUser().getCompanyId();
 
         List<ClientResponse> response =
-                clientService.getAllClients(user.getCompanyId());
+                clientService.getAllClients(companyId);
 
         return ResponseEntity.ok(
                 ApiResponseUtil.success(
@@ -75,21 +79,24 @@ public class ClientController {
         );
     }
 
+    // ==========================
+    // Get Client By ID
+    // ==========================
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'COMPANY_ADMIN', 'EMPLOYEE')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ClientResponse>> getClientById(
-            @PathVariable String id,
-            Authentication authentication) {
+            @AuthenticationPrincipal CustomUserDetails currentUser,
+            @PathVariable String id) {
 
-        String email = authentication.getName();
+        ObjectId companyId =
+                currentUser.getUser().getCompanyId();
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow();
-
-        ClientResponse response = clientService.getClientById(
-                id,
-                user.getCompanyId()
-        );
+        ClientResponse response =
+                clientService.getClientById(
+                        id,
+                        companyId
+                );
 
         return ResponseEntity.ok(
                 ApiResponseUtil.success(
@@ -99,22 +106,26 @@ public class ClientController {
         );
     }
 
+    // ==========================
+    // Update Client
+    // ==========================
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'COMPANY_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<ClientResponse>> updateClient(
+            @AuthenticationPrincipal CustomUserDetails currentUser,
             @PathVariable String id,
-            @Valid @RequestBody UpdateClientRequest request,
-            Authentication authentication) {
+            @Valid @RequestBody UpdateClientRequest request) {
 
-        String email = authentication.getName();
+        ObjectId companyId =
+                currentUser.getUser().getCompanyId();
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow();
-
-        ClientResponse response = clientService.updateClient(
-                id,
-                request,
-                user.getCompanyId()
-        );
+        ClientResponse response =
+                clientService.updateClient(
+                        id,
+                        request,
+                        companyId
+                );
 
         return ResponseEntity.ok(
                 ApiResponseUtil.success(
@@ -124,19 +135,22 @@ public class ClientController {
         );
     }
 
+    // ==========================
+    // Delete Client
+    // ==========================
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'COMPANY_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<String>> deleteClient(
-            @PathVariable String id,
-            Authentication authentication) {
+            @AuthenticationPrincipal CustomUserDetails currentUser,
+            @PathVariable String id) {
 
-        String email = authentication.getName();
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow();
+        ObjectId companyId =
+                currentUser.getUser().getCompanyId();
 
         clientService.deleteClient(
                 id,
-                user.getCompanyId()
+                companyId
         );
 
         return ResponseEntity.ok(

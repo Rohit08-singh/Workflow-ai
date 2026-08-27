@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,11 @@ public class TaskController {
         this.taskService = taskService;
     }
 
+    // ==========================
+    // Create Task
+    // ==========================
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'COMPANY_ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse<TaskResponse>> createTask(
             @AuthenticationPrincipal CustomUserDetails currentUser,
@@ -47,18 +53,27 @@ public class TaskController {
                         )
                 );
     }
+
+    // ==========================
+    // Update Task
+    // ==========================
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'COMPANY_ADMIN')")
     @PutMapping("/{taskId}")
     public ResponseEntity<ApiResponse<TaskResponse>> updateTask(
             @PathVariable String taskId,
             @AuthenticationPrincipal CustomUserDetails currentUser,
             @Valid @RequestBody UpdateTaskRequest request) {
 
-        System.out.println("Update API Called");
-
-        ObjectId companyId = currentUser.getUser().getCompanyId();
+        ObjectId companyId =
+                currentUser.getUser().getCompanyId();
 
         TaskResponse response =
-                taskService.updateTask(taskId, request, companyId);
+                taskService.updateTask(
+                        taskId,
+                        request,
+                        companyId
+                );
 
         return ResponseEntity.ok(
                 ApiResponseUtil.success(
@@ -68,12 +83,15 @@ public class TaskController {
         );
     }
 
+    // ==========================
+    // Get Tasks By Project
+    // ==========================
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'COMPANY_ADMIN', 'EMPLOYEE')")
     @GetMapping("/project/{projectId}")
     public ResponseEntity<ApiResponse<List<TaskResponse>>> getTasksByProject(
-
             @PathVariable String projectId,
-            @AuthenticationPrincipal CustomUserDetails currentUser
-    ) {
+            @AuthenticationPrincipal CustomUserDetails currentUser) {
 
         ObjectId companyId =
                 currentUser.getUser().getCompanyId();
@@ -92,15 +110,19 @@ public class TaskController {
         );
     }
 
+    // ==========================
+    // Update Task Status
+    // ==========================
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'COMPANY_ADMIN')")
     @PatchMapping("/{taskId}/status")
     public ResponseEntity<ApiResponse<TaskResponse>> updateTaskStatus(
             @PathVariable String taskId,
             @AuthenticationPrincipal CustomUserDetails currentUser,
-            @Valid @RequestBody UpdateTaskStatusRequest request
-    ) {
+            @Valid @RequestBody UpdateTaskStatusRequest request) {
 
-        ObjectId companyId = currentUser.getUser().getCompanyId();
+        ObjectId companyId =
+                currentUser.getUser().getCompanyId();
 
         TaskResponse response =
                 taskService.updateTaskStatus(
@@ -117,13 +139,15 @@ public class TaskController {
         );
     }
 
+    // ==========================
+    // Get Task By ID
+    // ==========================
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'COMPANY_ADMIN', 'EMPLOYEE')")
     @GetMapping("/{taskId}")
     public ResponseEntity<ApiResponse<TaskResponse>> getTaskById(
-
             @PathVariable String taskId,
-
-            @AuthenticationPrincipal CustomUserDetails currentUser
-    ) {
+            @AuthenticationPrincipal CustomUserDetails currentUser) {
 
         ObjectId companyId =
                 currentUser.getUser().getCompanyId();
@@ -142,13 +166,15 @@ public class TaskController {
         );
     }
 
+    // ==========================
+    // Delete Task
+    // ==========================
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'COMPANY_ADMIN')")
     @DeleteMapping("/{taskId}")
     public ResponseEntity<ApiResponse<Void>> deleteTask(
-
             @PathVariable String taskId,
-
-            @AuthenticationPrincipal CustomUserDetails currentUser
-    ) {
+            @AuthenticationPrincipal CustomUserDetails currentUser) {
 
         ObjectId companyId =
                 currentUser.getUser().getCompanyId();
@@ -166,14 +192,19 @@ public class TaskController {
         );
     }
 
+    // ==========================
+    // Assign Task
+    // ==========================
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'COMPANY_ADMIN')")
     @PatchMapping("/{taskId}/assign")
     public ResponseEntity<ApiResponse<TaskResponse>> assignTask(
             @PathVariable String taskId,
             @AuthenticationPrincipal CustomUserDetails currentUser,
-            @Valid @RequestBody AssignTaskRequest request
-    ) {
+            @Valid @RequestBody AssignTaskRequest request) {
 
-        ObjectId companyId = currentUser.getUser().getCompanyId();
+        ObjectId companyId =
+                currentUser.getUser().getCompanyId();
 
         TaskResponse response =
                 taskService.assignTask(

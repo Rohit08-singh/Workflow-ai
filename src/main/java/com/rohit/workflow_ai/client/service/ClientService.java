@@ -58,14 +58,30 @@ public class ClientService {
     }
 
 
-    public ClientResponse updateClient(String clientId,
-                                       UpdateClientRequest request,
-                                       ObjectId companyId) {
+    public ClientResponse updateClient(
+            String clientId,
+            UpdateClientRequest request,
+            ObjectId companyId) {
 
         Client client = clientRepository
-                .findByIdAndCompanyId(new ObjectId(clientId), companyId)
+                .findByIdAndCompanyId(
+                        new ObjectId(clientId),
+                        companyId
+                )
                 .orElseThrow(() ->
-                        new AppException(ErrorCode.CLIENT_NOT_FOUND));
+                        new AppException(
+                                ErrorCode.CLIENT_NOT_FOUND
+                        ));
+
+        if (!client.getEmail().equals(request.getEmail())
+                && clientRepository.existsByEmailAndCompanyId(
+                request.getEmail(),
+                companyId)) {
+
+            throw new AppException(
+                    ErrorCode.CLIENT_ALREADY_EXISTS
+            );
+        }
 
         client.setCompanyName(request.getCompanyName());
         client.setContactPerson(request.getContactPerson());
@@ -73,7 +89,8 @@ public class ClientService {
         client.setPhone(request.getPhone());
         client.setAddress(request.getAddress());
 
-        Client updatedClient = clientRepository.save(client);
+        Client updatedClient =
+                clientRepository.save(client);
 
         return ClientMapper.toResponse(updatedClient);
     }

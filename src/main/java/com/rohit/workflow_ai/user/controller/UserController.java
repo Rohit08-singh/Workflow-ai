@@ -1,14 +1,16 @@
 package com.rohit.workflow_ai.user.controller;
-
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import com.rohit.workflow_ai.common.response.ApiResponse;
 import com.rohit.workflow_ai.common.response.ApiResponseUtil;
+import com.rohit.workflow_ai.security.service.CustomUserDetails;
 import com.rohit.workflow_ai.user.dto.*;
 import com.rohit.workflow_ai.user.service.UserService;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +28,7 @@ public class UserController {
     // ==========================
     // Logged In User Profile
     // ==========================
+
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<UserProfileResponse>> getMyProfile(
             Authentication authentication) {
@@ -39,8 +42,9 @@ public class UserController {
     }
 
     // ==========================
-    // Update Profile
+    // Update Own Profile
     // ==========================
+
     @PutMapping("/me")
     public ResponseEntity<ApiResponse<UserProfileResponse>> updateProfile(
             Authentication authentication,
@@ -48,7 +52,10 @@ public class UserController {
 
         return ResponseEntity.ok(
                 ApiResponseUtil.success(
-                        userService.updateProfile(authentication, request),
+                        userService.updateProfile(
+                                authentication,
+                                request
+                        ),
                         "Profile updated successfully"
                 )
         );
@@ -57,17 +64,23 @@ public class UserController {
     // ==========================
     // Create Employee
     // ==========================
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'COMPANY_ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse<UserResponse>> createUser(
+            @AuthenticationPrincipal CustomUserDetails currentUser,
             @Valid @RequestBody CreateUserRequest request) {
 
         ObjectId companyId =
-                new ObjectId("68a0d12f0d3a4a8dbe2b1234");
+                currentUser.getUser().getCompanyId();
 
         UserResponse response =
-                userService.createUser(request, companyId);
+                userService.createUser(
+                        request,
+                        companyId
+                );
 
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
                 .body(
                         ApiResponseUtil.created(
                                 response,
@@ -75,15 +88,16 @@ public class UserController {
                         )
                 );
     }
-
     // ==========================
     // Get All Employees
     // ==========================
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'COMPANY_ADMIN')")
     @GetMapping
-    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers() {
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers(
+            @AuthenticationPrincipal CustomUserDetails currentUser) {
 
         ObjectId companyId =
-                new ObjectId("68a0d12f0d3a4a8dbe2b1234");
+                currentUser.getUser().getCompanyId();
 
         return ResponseEntity.ok(
                 ApiResponseUtil.success(
@@ -92,19 +106,23 @@ public class UserController {
                 )
         );
     }
-
     // ==========================
-    // Get Employee By Id
+    // Get Employee By ID
     // ==========================
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'COMPANY_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> getUserById(
+            @AuthenticationPrincipal CustomUserDetails currentUser,
             @PathVariable String id) {
 
         ObjectId companyId =
-                new ObjectId("68a0d12f0d3a4a8dbe2b1234");
+                currentUser.getUser().getCompanyId();
 
         UserResponse response =
-                userService.getUserById(id, companyId);
+                userService.getUserById(
+                        id,
+                        companyId
+                );
 
         return ResponseEntity.ok(
                 ApiResponseUtil.success(
@@ -113,17 +131,18 @@ public class UserController {
                 )
         );
     }
-
     // ==========================
     // Update Employee
     // ==========================
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'COMPANY_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> updateUser(
+            @AuthenticationPrincipal CustomUserDetails currentUser,
             @PathVariable String id,
             @Valid @RequestBody UpdateUserRequest request) {
 
         ObjectId companyId =
-                new ObjectId("68a0d12f0d3a4a8dbe2b1234");
+                currentUser.getUser().getCompanyId();
 
         UserResponse response =
                 userService.updateUser(
@@ -143,14 +162,19 @@ public class UserController {
     // ==========================
     // Delete Employee
     // ==========================
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'COMPANY_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteUser(
+            @AuthenticationPrincipal CustomUserDetails currentUser,
             @PathVariable String id) {
 
         ObjectId companyId =
-                new ObjectId("68a0d12f0d3a4a8dbe2b1234");
+                currentUser.getUser().getCompanyId();
 
-        userService.deleteUser(id, companyId);
+        userService.deleteUser(
+                id,
+                companyId
+        );
 
         return ResponseEntity.ok(
                 ApiResponseUtil.success(
