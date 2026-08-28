@@ -38,10 +38,14 @@ public class TaskController {
         ObjectId companyId =
                 currentUser.getUser().getCompanyId();
 
+        ObjectId performedBy =
+                currentUser.getUser().getId();
+
         TaskResponse response =
                 taskService.createTask(
                         request,
-                        companyId
+                        companyId,
+                        performedBy
                 );
 
         return ResponseEntity
@@ -68,11 +72,15 @@ public class TaskController {
         ObjectId companyId =
                 currentUser.getUser().getCompanyId();
 
+        ObjectId performedBy =
+                currentUser.getUser().getId();
+
         TaskResponse response =
                 taskService.updateTask(
                         taskId,
                         request,
-                        companyId
+                        companyId,
+                        performedBy
                 );
 
         return ResponseEntity.ok(
@@ -124,11 +132,15 @@ public class TaskController {
         ObjectId companyId =
                 currentUser.getUser().getCompanyId();
 
+        ObjectId performedBy =
+                currentUser.getUser().getId();
+
         TaskResponse response =
                 taskService.updateTaskStatus(
                         taskId,
                         request,
-                        companyId
+                        companyId,
+                        performedBy
                 );
 
         return ResponseEntity.ok(
@@ -179,9 +191,13 @@ public class TaskController {
         ObjectId companyId =
                 currentUser.getUser().getCompanyId();
 
+        ObjectId performedBy =
+                currentUser.getUser().getId();
+
         taskService.deleteTask(
                 taskId,
-                companyId
+                companyId,
+                performedBy
         );
 
         return ResponseEntity.ok(
@@ -206,11 +222,15 @@ public class TaskController {
         ObjectId companyId =
                 currentUser.getUser().getCompanyId();
 
+        ObjectId performedBy =
+                currentUser.getUser().getId();
+
         TaskResponse response =
                 taskService.assignTask(
                         taskId,
                         request,
-                        companyId
+                        companyId,
+                        performedBy
                 );
 
         return ResponseEntity.ok(

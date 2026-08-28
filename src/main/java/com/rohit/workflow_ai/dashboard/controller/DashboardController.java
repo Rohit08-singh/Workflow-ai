@@ -4,9 +4,13 @@ import com.rohit.workflow_ai.common.response.ApiResponse;
 import com.rohit.workflow_ai.common.response.ApiResponseUtil;
 import com.rohit.workflow_ai.dashboard.dto.DashboardResponse;
 import com.rohit.workflow_ai.dashboard.service.DashboardService;
+import com.rohit.workflow_ai.security.service.CustomUserDetails;
 import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/dashboard")
@@ -19,12 +23,11 @@ public class DashboardController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<DashboardResponse>> getDashboard() {
+    public ResponseEntity<ApiResponse<DashboardResponse>> getDashboard(
+            @AuthenticationPrincipal CustomUserDetails currentUser) {
 
-        // Temporary hardcoded companyId.
-        // Later this will come from JWT.
         ObjectId companyId =
-                new ObjectId("68a0d12f0d3a4a8dbe2b1234");
+                currentUser.getUser().getCompanyId();
 
         return ResponseEntity.ok(
                 ApiResponseUtil.success(

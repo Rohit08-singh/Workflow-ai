@@ -1,5 +1,6 @@
 package com.rohit.workflow_ai.project.service;
 
+import com.rohit.workflow_ai.activity.service.ActivityService;
 import com.rohit.workflow_ai.client.entity.Client;
 import com.rohit.workflow_ai.client.repository.ClientRepository;
 import com.rohit.workflow_ai.common.enums.Status;
@@ -21,29 +22,47 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ClientRepository clientRepository;
+    private final ActivityService activityService;
 
-    public ProjectService(ProjectRepository projectRepository,
-                          ClientRepository clientRepository) {
+    public ProjectService(
+            ProjectRepository projectRepository,
+            ClientRepository clientRepository,
+            ActivityService activityService) {
 
         this.projectRepository = projectRepository;
         this.clientRepository = clientRepository;
+        this.activityService = activityService;
     }
 
-    public ProjectResponse createProject(CreateProjectRequest request,
-                                         ObjectId companyId) {
+    // ==========================
+    // Create Project
+    // ==========================
 
-        ObjectId clientId = new ObjectId(request.getClientId());
+    public ProjectResponse createProject(
+            CreateProjectRequest request,
+            ObjectId companyId,
+            ObjectId performedBy) {
+
+        ObjectId clientId =
+                new ObjectId(request.getClientId());
 
         Client client = clientRepository
-                .findByIdAndCompanyId(clientId, companyId)
+                .findByIdAndCompanyId(
+                        clientId,
+                        companyId
+                )
                 .orElseThrow(() ->
-                        new AppException(ErrorCode.CLIENT_NOT_FOUND));
+                        new AppException(
+                                ErrorCode.CLIENT_NOT_FOUND
+                        ));
 
         if (projectRepository.existsByNameAndCompanyId(
                 request.getName(),
                 companyId)) {
 
-            throw new AppException(ErrorCode.PROJECT_ALREADY_EXISTS);
+            throw new AppException(
+                    ErrorCode.PROJECT_ALREADY_EXISTS
+            );
         }
 
         Project project = ProjectMapper.toEntity(
@@ -52,24 +71,50 @@ public class ProjectService {
                 clientId
         );
 
-        Project savedProject = projectRepository.save(project);
+        Project savedProject =
+                projectRepository.save(project);
+
+        // ==========================
+        // Create Activity
+        // ==========================
+
+        activityService.createActivity(
+                companyId,
+                performedBy,
+                "PROJECT_CREATED",
+                "Project '" + savedProject.getName()
+                        + "' was created",
+                savedProject.getId(),
+                null,
+                savedProject.getClientId(),
+                null
+        );
 
         return ProjectMapper.toResponse(savedProject);
     }
 
-    public List<ProjectResponse> getAllProjects(ObjectId companyId) {
+    // ==========================
+    // Get All Projects
+    // ==========================
 
-        List<Project> projects = projectRepository.findByCompanyId(companyId);
+    public List<ProjectResponse> getAllProjects(
+            ObjectId companyId) {
+
+        List<Project> projects =
+                projectRepository.findByCompanyId(companyId);
 
         return projects.stream()
                 .map(ProjectMapper::toResponse)
                 .toList();
     }
 
+    // ==========================
+    // Get Project By ID
+    // ==========================
+
     public ProjectResponse getProjectById(
             String projectId,
-            ObjectId companyId
-    ) {
+            ObjectId companyId) {
 
         Project project = projectRepository
                 .findByIdAndCompanyId(
@@ -77,28 +122,45 @@ public class ProjectService {
                         companyId
                 )
                 .orElseThrow(() ->
-                        new AppException(ErrorCode.PROJECT_NOT_FOUND));
+                        new AppException(
+                                ErrorCode.PROJECT_NOT_FOUND
+                        ));
 
         return ProjectMapper.toResponse(project);
     }
 
+    // ==========================
+    // Update Project
+    // ==========================
+
     public ProjectResponse updateProject(
             String projectId,
             UpdateProjectRequest request,
-            ObjectId companyId) {
+            ObjectId companyId,
+            ObjectId performedBy) {
 
         Project project = projectRepository
                 .findByIdAndCompanyId(
                         new ObjectId(projectId),
-                        companyId)
+                        companyId
+                )
                 .orElseThrow(() ->
-                        new AppException(ErrorCode.PROJECT_NOT_FOUND));
+                        new AppException(
+                                ErrorCode.PROJECT_NOT_FOUND
+                        ));
 
-        ObjectId clientId = new ObjectId(request.getClientId());
+        ObjectId clientId =
+                new ObjectId(request.getClientId());
 
-        clientRepository.findByIdAndCompanyId(clientId, companyId)
+        clientRepository
+                .findByIdAndCompanyId(
+                        clientId,
+                        companyId
+                )
                 .orElseThrow(() ->
-                        new AppException(ErrorCode.CLIENT_NOT_FOUND));
+                        new AppException(
+                                ErrorCode.CLIENT_NOT_FOUND
+                        ));
 
         project.setClientId(clientId);
         project.setName(request.getName());
@@ -106,15 +168,36 @@ public class ProjectService {
         project.setStartDate(request.getStartDate());
         project.setEndDate(request.getEndDate());
 
-        Project updatedProject = projectRepository.save(project);
+        Project updatedProject =
+                projectRepository.save(project);
+
+        // ==========================
+        // Create Activity
+        // ==========================
+
+        activityService.createActivity(
+                companyId,
+                performedBy,
+                "PROJECT_UPDATED",
+                "Project '" + updatedProject.getName()
+                        + "' was updated",
+                updatedProject.getId(),
+                null,
+                updatedProject.getClientId(),
+                null
+        );
 
         return ProjectMapper.toResponse(updatedProject);
     }
 
+    // ==========================
+    // Delete Project
+    // ==========================
+
     public void deleteProject(
             String projectId,
-            ObjectId companyId
-    ) {
+            ObjectId companyId,
+            ObjectId performedBy) {
 
         Project project = projectRepository
                 .findByIdAndCompanyId(
@@ -122,10 +205,28 @@ public class ProjectService {
                         companyId
                 )
                 .orElseThrow(() ->
-                        new AppException(ErrorCode.PROJECT_NOT_FOUND));
+                        new AppException(
+                                ErrorCode.PROJECT_NOT_FOUND
+                        ));
 
         project.setRecordStatus(Status.DELETED);
 
         projectRepository.save(project);
+
+        // ==========================
+        // Create Activity
+        // ==========================
+
+        activityService.createActivity(
+                companyId,
+                performedBy,
+                "PROJECT_DELETED",
+                "Project '" + project.getName()
+                        + "' was deleted",
+                project.getId(),
+                null,
+                project.getClientId(),
+                null
+        );
     }
 }

@@ -3,7 +3,6 @@ package com.rohit.workflow_ai.config;
 import com.rohit.workflow_ai.security.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,7 +11,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -58,12 +56,25 @@ public class SecurityConfig {
                                 "/api/v1/auth/**"
                         ).permitAll()
 
+                        // ==========================
+                        // Swagger
+                        // ==========================
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**"
+                        ).permitAll()
+
+                        // ==========================
                         // Logged-in user's profile
+                        // ==========================
                         .requestMatchers(
                                 "/api/v1/users/me"
                         ).authenticated()
 
+                        // ==========================
                         // User Management
+                        // ==========================
                         .requestMatchers(
                                 "/api/v1/users",
                                 "/api/v1/users/**"
@@ -72,7 +83,9 @@ public class SecurityConfig {
                                 "COMPANY_ADMIN"
                         )
 
+                        // ==========================
                         // Everything else
+                        // ==========================
                         .anyRequest().authenticated()
                 )
 
