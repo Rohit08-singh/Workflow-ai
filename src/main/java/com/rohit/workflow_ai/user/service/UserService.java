@@ -11,6 +11,7 @@ import org.bson.types.ObjectId;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -204,24 +205,49 @@ public class UserService {
     // Delete Employee
     // ==========================
 
-    public void deleteUser(
-            String userId,
-            ObjectId companyId) {
+    // ==========================
+// ==========================
+// Delete Employee
+// ==========================
+    @Transactional
+    public void deleteUser(String id, ObjectId companyId) {
 
-        User user =
-                userRepository
-                        .findByIdAndCompanyId(
-                                new ObjectId(userId),
-                                companyId
+        ObjectId userId;
+
+        try {
+            userId = new ObjectId(id);
+        } catch (IllegalArgumentException e) {
+            throw new AppException(
+                    ErrorCode.USER_NOT_FOUND
+            );
+        }
+
+        // Find employee belonging to the current company
+        User user = userRepository
+                .findByIdAndCompanyId(userId, companyId)
+                .orElseThrow(() ->
+                        new AppException(
+                                ErrorCode.USER_NOT_FOUND
                         )
-                        .orElseThrow(() ->
-                                new AppException(
-                                        ErrorCode.USER_NOT_FOUND
-                                ));
+                );
 
-        // Soft delete
-        user.setStatus(Status.DELETED);
+       
 
-        userRepository.save(user);
+        // Delete
+        userRepository.delete(user);
+
+        // Verify deletion
+        boolean stillExists = userRepository
+                .findByIdAndCompanyId(userId, companyId)
+                .isPresent();
+
+
+
+        if (stillExists) {
+            throw new RuntimeException(
+                    "Employee was not deleted from database"
+            );
+        }
+
     }
 }
