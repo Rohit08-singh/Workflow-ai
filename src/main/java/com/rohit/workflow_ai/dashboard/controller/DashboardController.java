@@ -31,8 +31,7 @@ public class DashboardController {
 
         return ResponseEntity.ok(
                 ApiResponseUtil.success(
-                        dashboardService.getDashboard(companyId),
-                        "Dashboard fetched successfully"
+                        dashboardService.getDashboard(companyId),                "Dashboard fetched successfully"
                 )
         );
     }

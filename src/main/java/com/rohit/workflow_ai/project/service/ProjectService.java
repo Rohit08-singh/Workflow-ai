@@ -96,6 +96,9 @@ public class ProjectService {
     // ==========================
     // Get All Projects
     // ==========================
+// ==========================
+// Get All Projects
+// ==========================
 
     public List<ProjectResponse> getAllProjects(
             ObjectId companyId) {
@@ -104,6 +107,9 @@ public class ProjectService {
                 projectRepository.findByCompanyId(companyId);
 
         return projects.stream()
+                .filter(project ->
+                        project.getRecordStatus() != Status.DELETED
+                )
                 .map(ProjectMapper::toResponse)
                 .toList();
     }
@@ -212,10 +218,6 @@ public class ProjectService {
         project.setRecordStatus(Status.DELETED);
 
         projectRepository.save(project);
-
-        // ==========================
-        // Create Activity
-        // ==========================
 
         activityService.createActivity(
                 companyId,

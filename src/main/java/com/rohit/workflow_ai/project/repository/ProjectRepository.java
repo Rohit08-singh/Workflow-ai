@@ -1,6 +1,7 @@
 package com.rohit.workflow_ai.project.repository;
 
 import com.rohit.workflow_ai.common.enums.ProjectStatus;
+import com.rohit.workflow_ai.common.enums.Status;
 import com.rohit.workflow_ai.project.entity.Project;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -20,8 +21,15 @@ public interface ProjectRepository
             ObjectId companyId
     );
 
+    // Existing method
     List<Project> findByCompanyId(
             ObjectId companyId
+    );
+
+    // NEW - only non-deleted projects
+    List<Project> findByCompanyIdAndRecordStatusNot(
+            ObjectId companyId,
+            Status recordStatus
     );
 
     List<Project> findByCompanyIdAndStatus(
@@ -33,7 +41,6 @@ public interface ProjectRepository
             ObjectId id,
             ObjectId companyId
     );
-
 
     // ==========================
     // Dashboard
